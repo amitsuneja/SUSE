@@ -1,0 +1,259 @@
+SUSESERVER# tar -zcvf ~/registrationfiles-backup-$( date +%s ).tar.gz /etc/SUSEConnect* /etc/zypp/ /etc/hosts
+
+SUSESERVER#  SUSEConnect --cleanup
+
+SUSESERVER# rm -rfv /etc/SUSEConnect /etc/zypp/credentials.d/*  /etc/zypp/repos.d/* /etc/zypp/services.d/*
+removed '/etc/zypp/repos.d/--check.repo'
+removed '/etc/zypp/repos.d/Cloud_Tools.repo'
+removed '/etc/zypp/repos.d/nVidia-Driver-SLE12-SP3.repo'
+SUSESERVER#
+
+
+
+SUSESERVER# /usr/sbin/registercloudguest --force-new
+
+SUSESERVER# [ ! -f /etc/SUSEConnect ] && echo -e "---\ninsecure: false\nurl: https://smt-azure.susecloud.net\nlanguage: POSIX" | tee /etc/SUSEConnect
+---
+insecure: false
+url: https://smt-azure.susecloud.net
+language: POSIX
+SUSESERVER#
+
+SUSESERVER# ls -ltr /etc/zypp/credentials.d/SCCcredentials && cat /etc/zypp/credentials.d/SCCcredentials
+-rw------- 1 root root 72 Mar 27 17:25 /etc/zypp/credentials.d/SCCcredentials
+username=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+password=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+SUSESERVER#
+
+
+SUSESERVER#  SUSEConnect --status-text | egrep -v "^$|^-"
+Installed Products:
+  Public Cloud Module
+  (sle-module-public-cloud/12/x86_64)
+  Not Registered
+
+
+  Containers module
+  (sle-module-containers/12/x86_64)
+  Not Registered
+
+
+  SUSE Linux Enterprise Software Development Kit 12 SP3
+  (sle-sdk/12.3/x86_64)
+  Not Registered
+
+
+  SUSE Linux Enterprise Server for SAP Applications 12 SP3
+  (SLES_SAP/12.3/x86_64)
+  Not Registered
+
+
+  Legacy Module
+  (sle-module-legacy/12/x86_64)
+  Not Registered
+
+
+  Web and Scripting Module
+  (sle-module-web-scripting/12/x86_64)
+  Not Registered
+
+
+  HPC Module
+  (sle-module-hpc/12/x86_64)
+  Not Registered
+
+
+  Toolchain Module
+  (sle-module-toolchain/12/x86_64)
+  Not Registered
+
+
+  Advanced Systems Management Module
+  (sle-module-adv-systems-management/12/x86_64)
+  Not Registered
+
+
+
+
+
+SUSESERVER# zypper ls
+# | Alias        | Name         | Enabled | GPG Check | Refresh | Type
+--+--------------+--------------+---------+-----------+---------+-------
+1 | cloud_update | cloud_update | Yes     | ----      | Yes     | plugin
+SUSESERVER#
+
+
+
+
+
+
+SUSESERVER# SUSEConnect --status-text | egrep -o "\([^()]*\)"
+(sle-module-public-cloud/12/x86_64)
+(sle-module-containers/12/x86_64)
+(sle-sdk/12.3/x86_64)
+(SLES_SAP/12.3/x86_64)
+(sle-module-legacy/12/x86_64)
+(sle-module-web-scripting/12/x86_64)
+(sle-module-hpc/12/x86_64)
+(sle-module-toolchain/12/x86_64)
+(sle-module-adv-systems-management/12/x86_64)
+SUSESERVER#
+
+
+SUSESERVER# REPO_LIST="$( SUSEConnect --status-text | egrep -o "\([^()]*\)" | egrep -o "[^()]*" )"
+SUSESERVER#
+SUSESERVER# echo $REPO_LIST
+sle-module-public-cloud/12/x86_64 sle-module-containers/12/x86_64 sle-sdk/12.3/x86_64 SLES_SAP/12.3/x86_64 sle-module-legacy/12/x86_64 sle-module-web-scripting/12/x86_64 sle-module-hpc/12/x86_64 sle-module-toolchain/12/x86_64 sle-module-adv-systems-management/12/x86_64
+SUSESERVER#
+
+SUSESERVER# for REPO_NAME in $REPO_LIST; do   echo "Enabling repository $REPO_NAME"; SUSEConnect -p "$REPO_NAME"; done
+Enabling repository sle-module-public-cloud/12/x86_64
+Error: Registration server returned 'Unmet product dependencies, activate one of these products first: SUSE Linux Enterprise Server 12 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 x86_64, SUSE Linux Enterprise Server 12 SP1 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP1 x86_64, SUSE Linux Enterprise Server 12 SP2 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP2 x86_64, SUSE Linux Enterprise Server 12 SP3 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP3 x86_64, SUSE Linux Enterprise Server 12 SP4 x86_64, SUSE Linux Enterprise High Performance Computing 12 SP2 x86_64, SUSE Linux Enterprise High Performance Computing 12 SP3 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP4 x86_64, SUSE Linux Enterprise High Performance Computing 12 SP4 x86_64, SUSE Linux Enterprise High Performance Computing 12 SP5 x86_64, SUSE Linux Enterprise Server 12 SP5 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP5 x86_64' (422)
+Enabling repository sle-module-containers/12/x86_64
+Error: Registration server returned 'Unmet product dependencies, activate one of these products first: SUSE Linux Enterprise Server 12 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 x86_64, SUSE Linux Enterprise Server 12 SP1 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP1 x86_64, SUSE Linux Enterprise Server 12 SP2 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP2 x86_64, SUSE Linux Enterprise Server 12 SP3 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP3 x86_64, SUSE Linux Enterprise Server 12 SP4 x86_64, SUSE Linux Enterprise High Performance Computing 12 SP2 x86_64, SUSE Linux Enterprise High Performance Computing 12 SP3 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP4 x86_64, SUSE Linux Enterprise High Performance Computing 12 SP4 x86_64, SUSE Linux Enterprise High Performance Computing 12 SP5 x86_64, SUSE Linux Enterprise Server 12 SP5 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP5 x86_64' (422)
+Enabling repository sle-sdk/12.3/x86_64
+Error: Registration server returned 'Unmet product dependencies, activate one of these products first: SUSE Linux Enterprise Server 12 SP3 x86_64, SUSE Linux Enterprise Server for SAP Applications 12 SP3 x86_64, SUSE Linux Enterprise High Performance Computing 12 SP3 x86_64' (422)
+Enabling repository SLES_SAP/12.3/x86_64
+Registered SLES_SAP 12.3 x86_64
+To server: https://smt-azure.susecloud.net
+Successfully registered system.
+Enabling repository sle-module-legacy/12/x86_64
+Registered sle-module-legacy 12 x86_64
+To server: https://smt-azure.susecloud.net
+Successfully registered system.
+Enabling repository sle-module-web-scripting/12/x86_64
+Registered sle-module-web-scripting 12 x86_64
+To server: https://smt-azure.susecloud.net
+Successfully registered system.
+Enabling repository sle-module-hpc/12/x86_64
+Registered sle-module-hpc 12 x86_64
+To server: https://smt-azure.susecloud.net
+Successfully registered system.
+Enabling repository sle-module-toolchain/12/x86_64
+Registered sle-module-toolchain 12 x86_64
+To server: https://smt-azure.susecloud.net
+Successfully registered system.
+Enabling repository sle-module-adv-systems-management/12/x86_64
+Registered sle-module-adv-systems-management 12 x86_64
+To server: https://smt-azure.susecloud.net
+Successfully registered system.
+SUSESERVER# zypper ls
+# | Alias                                                    | Name                                                     | Enabled | GPG Check | Refresh | Type
+--+----------------------------------------------------------+----------------------------------------------------------+---------+-----------+---------+-------
+1 | Advanced_Systems_Management_Module_x86_64                | Advanced_Systems_Management_Module_x86_64                | Yes     | ----      | Yes     | ris
+2 | HPC_Module_x86_64                                        | HPC_Module_x86_64                                        | Yes     | ----      | Yes     | ris
+3 | Legacy_Module_x86_64                                     | Legacy_Module_x86_64                                     | Yes     | ----      | Yes     | ris
+4 | SUSE_Linux_Enterprise_Server_for_SAP_Applications_x86_64 | SUSE_Linux_Enterprise_Server_for_SAP_Applications_x86_64 | Yes     | ----      | Yes     | ris
+5 | Toolchain_Module_x86_64                                  | Toolchain_Module_x86_64                                  | Yes     | ----      | Yes     | ris
+6 | Web_and_Scripting_Module_x86_64                          | Web_and_Scripting_Module_x86_64                          | Yes     | ----      | Yes     | ris
+7 | cloud_update                                             | cloud_update                                             | Yes     | ----      | Yes     | plugin
+SUSESERVER# SUSEConnect --status-text | egrep -v "^$|^-"
+Installed Products:
+  Public Cloud Module
+  (sle-module-public-cloud/12/x86_64)
+  Not Registered
+
+
+  Containers module
+  (sle-module-containers/12/x86_64)
+  Not Registered
+
+
+  SUSE Linux Enterprise Software Development Kit 12 SP3
+  (sle-sdk/12.3/x86_64)
+  Not Registered
+
+
+  SUSE Linux Enterprise Server for SAP Applications 12 SP3
+  (SLES_SAP/12.3/x86_64)
+  Registered
+
+  Legacy Module
+  (sle-module-legacy/12/x86_64)
+  Registered
+
+  Web and Scripting Module
+  (sle-module-web-scripting/12/x86_64)
+  Registered
+
+  HPC Module
+  (sle-module-hpc/12/x86_64)
+  Registered
+
+  Toolchain Module
+  (sle-module-toolchain/12/x86_64)
+  Registered
+
+  Advanced Systems Management Module
+  (sle-module-adv-systems-management/12/x86_64)
+  Registered
+
+SUSESERVER#
+SUSESERVER#
+SUSESERVER# rpm -qf /usr/sbin/waagent
+error: file /usr/sbin/waagent: No such file or directory
+SUSESERVER# zypper install python-azure-agent
+Refreshing service 'Advanced_Systems_Management_Module_x86_64'.
+Refreshing service 'Containers_Module_x86_64'.
+Refreshing service 'HPC_Module_x86_64'.
+Refreshing service 'Legacy_Module_x86_64'.
+Refreshing service 'Public_Cloud_Module_x86_64'.
+Refreshing service 'SUSE_Linux_Enterprise_Server_for_SAP_Applications_x86_64'.
+Refreshing service 'SUSE_Linux_Enterprise_Software_Development_Kit_x86_64'.
+Refreshing service 'Toolchain_Module_x86_64'.
+Refreshing service 'Web_and_Scripting_Module_x86_64'.
+Refreshing service 'cloud_update'.
+Loading repository data...
+Reading installed packages...
+Resolving package dependencies...
+
+The following NEW package is going to be installed:
+  python-azure-agent
+
+1 new package to install.
+Overall download size: 381.0 KiB. Already cached: 0 B. After the operation, additional 1.8 MiB will be
+used.
+Continue? [y/n/...? shows all options] (y): y
+Retrieving package python-azure-agent-2.2.45-34.20.1.noarch       (1/1), 381.0 KiB (  1.8 MiB unpacked)
+Retrieving: python-azure-agent-2.2.45-34.20.1.noarch.rpm ........................................[done]
+Checking for file conflicts: ....................................................................[done]
+(1/1) Installing: python-azure-agent-2.2.45-34.20.1.noarch ......................................[done]
+SUSESERVER# systemctl enable waagent
+Created symlink from /etc/systemd/system/multi-user.target.wants/waagent.service to /usr/lib/systemd/system/waagent.service.
+SUSESERVER# systemctl start waagent
+SUSESERVER# systemctl status waagent
+● waagent.service - Azure Linux Agent
+   Loaded: loaded (/usr/lib/systemd/system/waagent.service; enabled; vendor preset: disabled)
+   Active: active (running) since Fri 2020-03-27 17:39:49 UTC; 8s ago
+ Main PID: 112398 (python)
+    Tasks: 4 (limit: 512)
+   CGroup: /system.slice/waagent.service
+           ├─112398 /usr/bin/python -u /usr/sbin/waagent -daemon
+           └─112410 python -u /usr/sbin/waagent -run-exthandlers
+
+Mar 27 17:39:49 az-hdbqas-001 python[112398]:        0        0 DROP       tcp  --  *      *     ...NEW
+Mar 27 17:39:49 az-hdbqas-001 python[112398]: 2020/03/27 17:39:49.588219 INFO ExtHandler Created ...ice
+Mar 27 17:39:49 az-hdbqas-001 python[112398]: 2020/03/27 17:39:49.590412 INFO ExtHandler Wire ser....16
+Mar 27 17:39:49 az-hdbqas-001 python[112398]: 2020/03/27 17:39:49.885858 INFO [Microsoft.Azure.Ne...led
+Mar 27 17:39:49 az-hdbqas-001 python[112398]: 2020/03/27 17:39:49.887732 INFO [Microsoft.Azure.Ne...led
+Mar 27 17:39:49 az-hdbqas-001 python[112398]: 2020/03/27 17:39:49.888358 INFO [Microsoft.Azure.Ne...ngs
+Mar 27 17:39:49 az-hdbqas-001 python[112398]: 2020/03/27 17:39:49.889730 INFO [Microsoft.Azure.Ne...le]
+Mar 27 17:39:49 az-hdbqas-001 python[112398]: 2020/03/27 17:39:49.896279 INFO ExtHandler Started ...c1'
+Mar 27 17:39:49 az-hdbqas-001 python[112398]: 2020/03/27 17:39:49.898499 INFO ExtHandler Started ...ope
+Mar 27 17:39:49 az-hdbqas-001 python[112398]: 2020/03/27 17:39:49.898704 INFO ExtHandler Started ...ope
+Hint: Some lines were ellipsized, use -l to show in full.
+SUSESERVER#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
